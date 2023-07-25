@@ -1,23 +1,51 @@
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
-import { Button, IconButton, Img, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import { IconButton, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import userService from '../services/userService'
 
 interface Family {
+  _id: string,
   name: string,
   age: number,
   role: string,
-  birthday: string
+  birthday: string,
+  isDeleted:string
 }
 
 interface Props {
-  families: Family[]
+  families: Family[],
+  editMember: (e: any) => any;
+  removeMember: (e: any) => any;
+  error: (e: any) => any;
 }
-export const MembersTable = ({ families }: Props) => {
+
+export const MembersTable = ({ families, editMember, removeMember, error }: Props) => {
+  
+
+  const updateMember = (member: Family) => {
+
+    userService.update(member, member._id).then((res) => editMember(member)).catch(err => {
+      error(err.message);
+    }
+    );
+  }
+
+  const deleteMember = (member: Family) => {
+    removeMember(families.filter((res) => res._id !== member._id));
+    
+    userService.delete(member._id)
+    .catch(err => {
+      error(err.message)
+    });
+  }
+
+  const filteredMembers = families.filter((member) => !member.isDeleted)
+
   return (
     <TableContainer>
+      
       <Table variant='simple'>
         <Thead>
           <Tr>
-            <Th>Photo</Th>
             <Th>Member Name</Th>
             <Th>Age</Th>
             <Th>Role</Th>
@@ -26,9 +54,8 @@ export const MembersTable = ({ families }: Props) => {
           </Tr>
         </Thead>
         <Tbody>
-          {families.map((member) =>
-            <Tr>
-              <Td><Img src='https://randomuser.me/api/portraits/women/87.jpg' boxSize='50px' borderRadius='5px'></Img></Td>
+          {filteredMembers.map((member) =>
+            <Tr key={member._id}>
               <Td>{member.name}</Td>
               <Td>{member.age}</Td>
               <Td>{member.role}</Td>
@@ -39,13 +66,15 @@ export const MembersTable = ({ families }: Props) => {
                   size='sm'
                   aria-label='Call Segun'
                   icon={<EditIcon />}
+                  onClick={() => updateMember(member)}
                 />
-                  <IconButton
+                <IconButton
                   colorScheme='red'
                   size='sm'
                   aria-label='Call Segun'
                   marginX={1}
                   icon={<DeleteIcon />}
+                  onClick={() => deleteMember(member)}
                 />
               </Td>
             </Tr>
