@@ -1,6 +1,7 @@
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { IconButton, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 import userService from '../services/userService'
+import { FormEvent } from 'react';
 
 interface Family {
   _id: string,
@@ -13,20 +14,18 @@ interface Family {
 
 interface Props {
   families: Family[],
-  editMember: (e: any) => any;
+  toggleUpdateForm: (e: any) => any;
+  selectMember: any;
   removeMember: (e: any) => any;
   error: (e: any) => any;
 }
 
-export const MembersTable = ({ families, editMember, removeMember, error }: Props) => {
+export const MembersTable = ({ families, toggleUpdateForm, removeMember, error, selectMember }: Props) => {
   
+  const updateHandler = (member: Family, e: FormEvent) => {
+    toggleUpdateForm(e);
+    selectMember(member)
 
-  const updateMember = (member: Family) => {
-
-    userService.update(member, member._id).then((res) => editMember(member)).catch(err => {
-      error(err.message);
-    }
-    );
   }
 
   const deleteMember = (member: Family) => {
@@ -41,9 +40,9 @@ export const MembersTable = ({ families, editMember, removeMember, error }: Prop
   const filteredMembers = families.filter((member) => !member.isDeleted)
 
   return (
-    <TableContainer>
+    <TableContainer  borderRadius='10px'>
       
-      <Table variant='simple'>
+      <Table variant='simple' colorScheme='gray'>
         <Thead>
           <Tr>
             <Th>Member Name</Th>
@@ -66,7 +65,7 @@ export const MembersTable = ({ families, editMember, removeMember, error }: Prop
                   size='sm'
                   aria-label='Call Segun'
                   icon={<EditIcon />}
-                  onClick={() => updateMember(member)}
+                  onClick={(e) => updateHandler(member,e)}
                 />
                 <IconButton
                   colorScheme='red'

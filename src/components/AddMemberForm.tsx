@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input, Select } from '@chakra-ui/react'
+import { Button, FormControl, FormLabel, HStack, Input, Select, Stack } from '@chakra-ui/react'
 import { FormEvent, useState } from 'react'
 import userService from '../services/userService';
 
@@ -11,11 +11,12 @@ interface Family {
 
 interface Props {
     families: Family[]
-    addMember: (e: any) => any;
-    error: (e: any) => any;
+    addMember: (e: any) => any,
+    error: (e: any) => any,
+    onClose: (e: any) => any
 }
 
-export const AddMemberForm = ({ families, addMember, error }: Props) => {
+export const AddMemberForm = ({ families, addMember, error, onClose }: Props) => {
     const [member, setMember] = useState({
         name: '',
         age: '',
@@ -59,8 +60,12 @@ export const AddMemberForm = ({ families, addMember, error }: Props) => {
                     </Select>
                     <FormLabel>Date of Birth</FormLabel>
                     <Input id='birthday' type='date' value={member.birthday} onChange={(e) => setMember({ ...member, birthday: e.target.value })} placeholder='Enter Date of Birth' required />
-                    <Button colorScheme='teal' type='submit' mt={5}>Submit</Button>
                 </FormControl>
+                <HStack justifyContent='right' marginTop='10'>
+                    <Button colorScheme='teal' type='submit' mr={3}>Submit</Button>
+                    <Button onClick={onClose}>Cancel</Button>
+                </HStack>
+
             </form>
         </>
     )
