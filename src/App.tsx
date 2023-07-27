@@ -7,6 +7,7 @@ import { CanceledError } from './services/api-client';
 import userService, { Member } from './services/userService';
 import { ModalForm } from './components/ModalForm';
 import { UpdateMemberForm } from './components/UpdateMemberForm';
+import { countAge } from './helpers/countAge';
 
 function App() {
   const [family, setFamily] = useState<Member[]>([]);
@@ -17,6 +18,8 @@ function App() {
   const skeletons = [1, 2, 3, 4, 5];
   const addModal =  useDisclosure()
   const updateModal =  useDisclosure()
+
+
 
   useEffect(() => {
 
